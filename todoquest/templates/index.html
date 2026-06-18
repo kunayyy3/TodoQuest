@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>투두 퀘스트 (Todo Quest) - 8비트 모험의 시작</title>
+    <!-- 구글 폰트 추가 (Share Tech Mono 등) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- 스타일시트 연동 -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 상단 헤더: 마을 및 재화 정보, 출석 단추 -->
+        <header class="game-header pixel-panel">
+            <div class="logo-area">
+                <!-- 픽셀 타이틀 아이콘 -->
+                <svg class="pixel-icon" viewBox="0 0 16 16" width="32" height="32" style="image-rendering: pixelated; margin-right: 8px;">
+                    <!-- 8비트 칼 아이콘 -->
+                    <rect x="11" y="2" width="2" height="2" fill="var(--gb-darkest)" />
+                    <rect x="9" y="4" width="2" height="2" fill="var(--gb-darkest)" />
+                    <rect x="7" y="6" width="2" height="2" fill="var(--gb-dark)" />
+                    <rect x="5" y="8" width="2" height="2" fill="var(--gb-lightest)" />
+                    <rect x="3" y="10" width="3" height="3" fill="var(--gb-dark)" />
+                    <rect x="1" y="12" width="3" height="3" fill="var(--gb-darkest)" />
+                </svg>
+                <h1>투두 퀘스트 <span class="logo-sub">Todo Quest</span></h1>
+            </div>
+            
+            <div class="header-status">
+                <!-- 일일 출석 보상 버튼 -->
+                <button class="btn-attendance" id="btn-attendance" onclick="claimAttendance()">출석 보상 받기</button>
+
+                <div class="status-item gold-status" title="보유 골드">
+                    <svg class="pixel-icon" viewBox="0 0 16 16" width="24" height="24" style="image-rendering: pixelated; margin-right: 4px;">
+                        <!-- 8비트 노란 동전 (도트화) -->
+                        <rect x="5" y="2" width="6" height="2" fill="var(--gb-darkest)" />
+                        <rect x="3" y="4" width="10" height="8" fill="var(--gb-darkest)" />
+                        <rect x="5" y="12" width="6" height="2" fill="var(--gb-darkest)" />
+                        <rect x="4" y="3" width="1" height="10" fill="var(--gb-light)" />
+                        <rect x="5" y="3" width="6" height="1" fill="var(--gb-light)" />
+                        <rect x="11" y="4" width="1" height="8" fill="var(--gb-dark)" />
+                        <rect x="5" y="11" width="6" height="1" fill="var(--gb-dark)" />
+                        <rect x="7" y="5" width="2" height="2" fill="var(--gb-dark)" />
+                        <rect x="6" y="7" width="2" height="2" fill="var(--gb-dark)" />
+                        <rect x="7" y="9" width="2" height="2" fill="var(--gb-dark)" />
+                    </svg>
+                    <span class="status-value" id="gold-value">0</span> <span class="status-label">G</span>
+                </div>
+                
+                <div class="status-item village-status" title="마을 등급">
+                    <svg class="pixel-icon" viewBox="0 0 16 16" width="24" height="24" style="image-rendering: pixelated; margin-right: 4px;">
+                        <!-- 8비트 성/마을 아이콘 -->
+                        <rect x="2" y="10" width="12" height="4" fill="var(--gb-dark)" />
+                        <rect x="1" y="13" width="14" height="2" fill="var(--gb-darkest)" />
+                        <!-- 기둥 -->
+                        <rect x="3" y="4" width="2" height="6" fill="var(--gb-dark)" />
+                        <rect x="11" y="4" width="2" height="6" fill="var(--gb-dark)" />
+                        <rect x="7" y="6" width="2" height="4" fill="var(--gb-dark)" />
+                        <!-- 지붕 -->
+                        <rect x="2" y="2" width="4" height="2" fill="var(--gb-darkest)" />
+                        <rect x="10" y="2" width="4" height="2" fill="var(--gb-darkest)" />
+                        <!-- 문 -->
+                        <rect x="7" y="11" width="2" height="3" fill="var(--gb-darkest)" />
+                    </svg>
+                    <span class="status-value" id="village-rank-name">기본 마을</span>
+                    <span class="village-badge" id="village-rank-badge">LV.1</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 4분할 레이아웃 (Grid 2x2) -->
+        <main class="game-layout">
+            <!-- 1. 좌측 상단 (Top-Left): 퀘스트 리스트 -->
+            <section class="pixel-panel todo-card">
+                <h2 class="section-title">
+                    <svg class="pixel-icon" viewBox="0 0 16 16" width="28" height="28" style="image-rendering: pixelated;">
+                        <!-- 8비트 깃펜/퀘스트 두루마리 -->
+                        <rect x="3" y="2" width="10" height="12" fill="var(--gb-lightest)" />
+                        <rect x="2" y="3" width="12" height="10" fill="var(--gb-lightest)" />
+                        <!-- 선 라인 -->
+                        <rect x="5" y="5" width="6" height="1" fill="var(--gb-dark)" />
+                        <rect x="5" y="8" width="6" height="1" fill="var(--gb-dark)" />
+                        <rect x="5" y="11" width="4" height="1" fill="var(--gb-dark)" />
+                        <!-- 테두리 블랙 -->
+                        <rect x="3" y="1" width="10" height="1" fill="var(--gb-darkest)" />
+                        <rect x="3" y="14" width="10" height="1" fill="var(--gb-darkest)" />
+                        <rect x="2" y="2" width="1" height="12" fill="var(--gb-darkest)" />
+                        <rect x="13" y="2" width="1" height="12" fill="var(--gb-darkest)" />
+                    </svg>
+                    퀘스트 목록 (할 일)
+                </h2>
+                
+                <!-- 할 일 입력 폼 -->
+                <form id="todo-form" class="todo-input-area">
+                    <input type="text" id="todo-input" placeholder="새로운 퀘스트(할 일)를 입력하세요..." required autocomplete="off">
+                    
+                    <div class="category-selector">
+                        <label class="category-btn active" data-category="study">
+                            <input type="radio" name="category" value="study" checked>
+                            <span>📚 공부</span>
+                        </label>
+                        <label class="category-btn" data-category="homework">
+                            <input type="radio" name="category" value="homework">
+                            <span>📝 과제</span>
+                        </label>
+                        <label class="category-btn" data-category="exercise">
+                            <input type="radio" name="category" value="exercise">
+                            <span>💪 운동</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">퀘스트 등록</button>
+                </form>
+
+                <!-- 투두리스트 탭 구성 -->
+                <div class="todo-tabs">
+                    <button class="tab-btn active" id="tab-active-btn" onclick="switchTodoTab('active')">진행 중</button>
+                    <button class="tab-btn" id="tab-completed-btn" onclick="switchTodoTab('completed')">완료됨</button>
+                </div>
+
+                <!-- 투두리스트 목록 -->
+                <div class="todo-list-wrapper">
+                    <ul id="todo-list" class="todo-list">
+                        <!-- JS를 통해 동적 생성 -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 2. 우측 상단 (Top-Right): 용사의 능력치 -->
+            <section class="pixel-panel profile-card">
+                <h2 class="section-title">
+                    <svg class="pixel-icon" viewBox="0 0 16 16" width="28" height="28" style="image-rendering: pixelated;">
+                        <!-- 8비트 용사 머리/투구 -->
+                        <rect x="5" y="2" width="6" height="4" fill="var(--gb-light)" />
+                        <rect x="3" y="6" width="10" height="6" fill="var(--gb-dark)" />
+                        <!-- 눈 가리개 -->
+                        <rect x="3" y="7" width="10" height="2" fill="var(--gb-darkest)" />
+                        <rect x="6" y="7" width="4" height="2" fill="var(--gb-lightest)" />
+                        <!-- 몸체 -->
+                        <rect x="2" y="12" width="12" height="3" fill="var(--gb-dark)" />
+                        <rect x="1" y="14" width="14" height="2" fill="var(--gb-darkest)" />
+                    </svg>
+                    용사의 능력치
+                </h2>
+                
+                <div class="stats-grid">
+                    <!-- 공격력 (공부) -->
+                    <div class="stat-row atk-theme">
+                        <div class="stat-info">
+                            <span class="stat-label">
+                                <svg class="pixel-icon" viewBox="0 0 16 16" width="16" height="16" style="image-rendering: pixelated; margin-right: 4px; vertical-align: middle;">
+                                    <!-- 공격 무기: 픽셀 단검 -->
+                                    <rect x="10" y="2" width="4" height="4" fill="var(--gb-darkest)" />
+                                    <rect x="7" y="5" width="4" height="4" fill="var(--gb-light)" />
+                                    <rect x="4" y="8" width="4" height="4" fill="var(--gb-dark)" />
+                                    <rect x="2" y="11" width="3" height="3" fill="var(--gb-dark)" />
+                                    <rect x="1" y="13" width="2" height="2" fill="var(--gb-darkest)" />
+                                </svg>
+                                공격력 (ATK)
+                            </span>
+                            <span class="stat-number" id="stat-atk">10.0</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar" id="stat-bar-atk" style="width: 20%"></div>
+                        </div>
+                        <span class="stat-source">📚 공부로 상승</span>
+                    </div>
+
+                    <!-- 방어력 (과제) -->
+                    <div class="stat-row def-theme">
+                        <div class="stat-info">
+                            <span class="stat-label">
+                                <svg class="pixel-icon" viewBox="0 0 16 16" width="16" height="16" style="image-rendering: pixelated; margin-right: 4px; vertical-align: middle;">
+                                    <!-- 방패 아이콘 -->
+                                    <rect x="2" y="2" width="12" height="4" fill="var(--gb-darkest)" />
+                                    <rect x="3" y="6" width="10" height="4" fill="var(--gb-darkest)" />
+                                    <rect x="4" y="10" width="8" height="3" fill="var(--gb-darkest)" />
+                                    <rect x="6" y="13" width="4" height="2" fill="var(--gb-darkest)" />
+                                    <rect x="7" y="15" width="2" height="1" fill="var(--gb-darkest)" />
+                                    <!-- 내부 음영 -->
+                                    <rect x="4" y="4" width="8" height="6" fill="var(--gb-light)" />
+                                </svg>
+                                방어력 (DEF)
+                            </span>
+                            <span class="stat-number" id="stat-def">10.0</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar" id="stat-bar-def" style="width: 20%"></div>
+                        </div>
+                        <span class="stat-source">📝 과제로 상승</span>
+                    </div>
+
+                    <!-- 체력 (운동) -->
+                    <div class="stat-row hp-theme">
+                        <div class="stat-info">
+                            <span class="stat-label">
+                                <svg class="pixel-icon" viewBox="0 0 16 16" width="16" height="16" style="image-rendering: pixelated; margin-right: 4px; vertical-align: middle;">
+                                    <!-- 생명 하트 아이콘 -->
+                                    <rect x="2" y="4" width="4" height="4" fill="var(--gb-darkest)" />
+                                    <rect x="10" y="4" width="4" height="4" fill="var(--gb-darkest)" />
+                                    <rect x="4" y="2" width="2" height="8" fill="var(--gb-darkest)" />
+                                    <rect x="10" y="2" width="2" height="8" fill="var(--gb-darkest)" />
+                                    <rect x="6" y="4" width="4" height="8" fill="var(--gb-darkest)" />
+                                    <rect x="4" y="10" width="8" height="2" fill="var(--gb-darkest)" />
+                                    <rect x="6" y="12" width="4" height="2" fill="var(--gb-darkest)" />
+                                    <rect x="7" y="14" width="2" height="2" fill="var(--gb-darkest)" />
+                                    <!-- 밝은 영역 -->
+                                    <rect x="4" y="4" width="2" height="2" fill="var(--gb-light)" />
+                                    <rect x="10" y="4" width="2" height="2" fill="var(--gb-light)" />
+                                </svg>
+                                체력 (HP)
+                            </span>
+                            <span class="stat-number" id="stat-hp">100.0</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar" id="stat-bar-hp" style="width: 20%"></div>
+                        </div>
+                        <span class="stat-source">💪 운동으로 상승</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 좌측 하단 (Bottom-Left): 오늘의 모험 던전 -->
+            <section class="pixel-panel dungeon-card">
+                <div class="dungeon-title-row">
+                    <h2 class="section-title">
+                        <svg class="pixel-icon" viewBox="0 0 16 16" width="28" height="28" style="image-rendering: pixelated;">
+                            <!-- 8비트 해골/던전 아이콘 -->
+                            <rect x="4" y="2" width="8" height="12" fill="var(--gb-lightest)" />
+                            <rect x="2" y="6" width="12" height="6" fill="var(--gb-lightest)" />
+                            <!-- 턱 조각 -->
+                            <rect x="5" y="14" width="6" height="1" fill="var(--gb-lightest)" />
+                            <!-- 눈/코 구멍 -->
+                            <rect x="5" y="6" width="2" height="2" fill="var(--gb-darkest)" />
+                            <rect x="9" y="6" width="2" height="2" fill="var(--gb-darkest)" />
+                            <rect x="7" y="9" width="2" height="2" fill="var(--gb-darkest)" />
+                            <!-- 그림자 테두리 -->
+                            <rect x="4" y="1" width="8" height="1" fill="var(--gb-darkest)" />
+                            <rect x="2" y="5" width="12" height="1" fill="var(--gb-darkest)" />
+                        </svg>
+                        오늘의 모험 던전
+                    </h2>
+                    <span class="date-badge" id="current-date">0000-00-00</span>
+                </div>
+                <p class="section-subtitle">하루마다 날짜 기준 3개의 새로운 던전이 생성됩니다. 용사의 능력치를 확인하고 도전하세요!</p>
+                
+                <div class="dungeon-list" id="dungeon-list">
+                    <!-- JS를 통해 동적 생성 -->
+                </div>
+            </section>
+
+            <!-- 4. 우측 하단 (Bottom-Right): 마을 발전소 -->
+            <section class="pixel-panel village-card">
+                <h2 class="section-title">
+                    <svg class="pixel-icon" viewBox="0 0 16 16" width="28" height="28" style="image-rendering: pixelated;">
+                        <!-- 8비트 집/마을 아이콘 -->
+                        <rect x="4" y="6" width="8" height="8" fill="var(--gb-light)" />
+                        <!-- 지붕 삼각 -->
+                        <rect x="7" y="1" width="2" height="2" fill="var(--gb-dark)" />
+                        <rect x="5" y="3" width="6" height="2" fill="var(--gb-dark)" />
+                        <rect x="3" y="5" width="10" height="2" fill="var(--gb-dark)" />
+                        <!-- 문 -->
+                        <rect x="7" y="11" width="2" height="3" fill="var(--gb-darkest)" />
+                        <!-- 창문 -->
+                        <rect x="5" y="8" width="2" height="2" fill="var(--gb-lightest)" />
+                        <rect x="9" y="8" width="2" height="2" fill="var(--gb-lightest)" />
+                    </svg>
+                    마을 발전소
+                </h2>
+                
+                <div class="village-upgrade-info">
+                    <div class="village-visual">
+                        <span class="village-emoji" id="village-emoji">🏕️</span>
+                        <div class="village-level-label">
+                            <h3 id="next-village-rank-title">견습 마을</h3>
+                            <p id="village-rank-desc">골드를 모아 마을의 등급을 높이고 지속 영구 버프를 획득하세요.</p>
+                        </div>
+                    </div>
+
+                    <!-- 버프 상태 보드 -->
+                    <div class="buff-status-board">
+                        <h4>✨ 현재 적용 중인 마을 영구 버프</h4>
+                        <ul class="buff-list" id="current-buffs-list">
+                            <!-- JS 동적 바인딩 -->
+                        </ul>
+                    </div>
+
+                    <!-- 마을 강화 버튼 구역 -->
+                    <div class="upgrade-action-area">
+                        <div class="upgrade-cost-info" id="upgrade-cost-container">
+                            <span>강화 비용:</span>
+                            <span class="cost-gold">🪙 <strong id="upgrade-cost-value">100</strong> G</span>
+                        </div>
+                        <button class="btn-upgrade" id="btn-upgrade-village" onclick="upgradeVillage()">마을 강화하기</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 하단 섹션: 시스템 모험 로그 콘솔 -->
+        <section class="pixel-panel log-card" style="margin-top: 1.5rem;">
+            <h2 class="section-title">
+                <svg class="pixel-icon" viewBox="0 0 16 16" width="28" height="28" style="image-rendering: pixelated;">
+                    <!-- 8비트 로그 확성기 아이콘 -->
+                    <rect x="2" y="6" width="4" height="4" fill="var(--gb-dark)" />
+                    <rect x="6" y="4" width="4" height="8" fill="var(--gb-darkest)" />
+                    <rect x="10" y="2" width="2" height="12" fill="var(--gb-light)" />
+                    <rect x="12" y="3" width="2" height="10" fill="var(--gb-dark)" />
+                </svg>
+                모험 기록 (최근 활동 로그)
+            </h2>
+            <div class="log-console" id="system-logs-console">
+                <!-- 최신 로그 노출 -->
+            </div>
+        </section>
+    </div>
+
+    <!-- 던전 전투용 텍스트 터미널 모달 (완전한 레트로 도트 터미널) -->
+    <div class="modal-overlay" id="combat-modal">
+        <div class="combat-terminal-container pixel-panel">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <div class="terminal-title">BATTLE_MONITOR.EXE</div>
+            </div>
+            
+            <!-- 전투 상태 바 (플레이어 vs 몬스터) -->
+            <div class="combat-status-header">
+                <div class="combat-actor player-side">
+                    <span class="actor-icon">👤 용사</span>
+                    <div class="actor-hp-container">
+                        <div class="actor-hp-bar" id="combat-player-hp-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="actor-hp-text" id="combat-player-hp-text">100/100 HP</span>
+                </div>
+                
+                <div class="combat-vs">VS</div>
+                
+                <div class="combat-actor monster-side">
+                    <span class="actor-icon" id="combat-monster-name">👹 몬스터</span>
+                    <div class="actor-hp-container">
+                        <div class="actor-hp-bar" id="combat-monster-hp-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="actor-hp-text" id="combat-monster-hp-text">50/50 HP</span>
+                </div>
+            </div>
+
+            <!-- 터미널 스크롤 화면 -->
+            <div class="terminal-screen" id="combat-terminal-screen">
+                <!-- 여기에 전투 텍스트가 타이핑되면서 추가됩니다 -->
+            </div>
+
+            <!-- 전투 종료 후 액션 버튼 -->
+            <div class="terminal-footer">
+                <button class="btn-primary" id="btn-close-terminal" onclick="closeCombatModal()" style="display: none;">전투 종료하고 복귀하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 사운드 제어 토글 (접근성) -->
+    <div class="sound-toggle" onclick="toggleSound()">
+        <span id="sound-icon">🔊</span>
+    </div>
+
+    <!-- 스크립트 로드 -->
+    <script src="/static/js/game.js"></script>
+</body>
+</html>

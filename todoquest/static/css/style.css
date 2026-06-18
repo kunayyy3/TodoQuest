@@ -1,0 +1,818 @@
+/* ==========================================================================
+   Todo Quest 클래식 게임보이 4색 모노크롬 테마 디자인
+   ========================================================================== */
+
+/* 둥근모꼴 한글 픽셀 웹 폰트 정의 */
+@font-face {
+    font-family: 'DungGeunMo';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    /* 게임보이 4색 녹색 팔레트 */
+    --gb-lightest: #e0f8d0;  /* 가장 밝은 녹색 (스크린 배경, 하이라이트) */
+    --gb-light: #88c070;     /* 서브 판넬 및 연한 배경색 */
+    --gb-dark: #346856;      /* 버튼 및 서브 텍스트, 비활성 요소 */
+    --gb-darkest: #081820;   /* 가장 어두운 녹색 (바디 배경, 메인 텍스트, 굵은 테두리) */
+    
+    /* 용사 스탯 및 골드 포인트 컬러 (식별용 단색 톤다운) */
+    --atk-point: #c62828;    /* 차분한 적색 */
+    --def-point: #1565c0;    /* 차분한 청색 */
+    --hp-point: #2e7d32;     /* 차분한 녹색 */
+    --gold-point: #e65100;   /* 차분한 오렌지/골드 */
+}
+
+/* 글로벌 초기화 및 레트로 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'DungGeunMo', 'Share Tech Mono', monospace;
+    image-rendering: pixelated;
+}
+
+body {
+    background-color: var(--gb-darkest);
+    background-image: 
+        linear-gradient(rgba(52, 104, 86, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(52, 104, 86, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--gb-lightest);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   게임보이 액정 화면 판넬 컴포넌트
+   ========================================================================== */
+.pixel-panel {
+    background: var(--gb-lightest); /* 액정 밝은 판 */
+    border: 4px solid var(--gb-darkest); /* 진한 도트 외곽선 */
+    box-shadow: 6px 6px 0px var(--gb-darkest);
+    border-radius: 0px;
+    padding: 1.5rem;
+    position: relative;
+    color: var(--gb-darkest); /* 텍스트는 최고 대비인 가장 어두운 색 */
+}
+
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ==========================================================================
+   헤더 구역 및 출석 보상
+   ========================================================================== */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--gb-light);
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+}
+
+.logo-area h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--gb-darkest);
+    text-shadow: 1px 1px 0px var(--gb-lightest);
+}
+
+.logo-sub {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--gb-dark);
+}
+
+.header-status {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 0.85rem;
+    background: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+.status-value {
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.status-label {
+    color: var(--gb-dark);
+    font-size: 0.9rem;
+    margin-left: 0.25rem;
+}
+
+/* 포인트 성격을 가지는 스탯 정보 색상화 */
+.gold-status .status-value {
+    color: var(--gold-point);
+    font-weight: 800;
+}
+
+.village-status {
+    background: var(--gb-lightest);
+}
+
+.village-status .status-value {
+    color: var(--gb-darkest);
+}
+
+.village-badge {
+    background: var(--gb-dark);
+    color: var(--gb-lightest);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.1rem 0.3rem;
+    border: 1px solid var(--gb-darkest);
+    margin-left: 0.35rem;
+}
+
+/* 일일 출석 보상 버튼 */
+.btn-attendance {
+    background: var(--gb-dark);
+    color: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    box-shadow: 3px 3px 0px var(--gb-darkest);
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-attendance:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0px var(--gb-darkest);
+}
+
+.btn-attendance:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px var(--gb-darkest);
+}
+
+.btn-attendance.claimed {
+    background: var(--gb-light);
+    color: var(--gb-dark);
+    border-color: var(--gb-dark);
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* ==========================================================================
+   4분할 화면 구성 (Grid 2x2 Layout)
+   ========================================================================== */
+.game-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 3px double var(--gb-darkest);
+    padding-bottom: 0.5rem;
+    color: var(--gb-darkest);
+}
+
+.section-subtitle {
+    color: var(--gb-dark);
+    font-size: 0.85rem;
+    margin-top: -0.75rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   퀘스트 리스트 (할 일 목록) - Top-Left
+   ========================================================================== */
+.todo-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+#todo-input {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    color: var(--gb-darkest);
+    font-size: 0.95rem;
+}
+
+#todo-input:focus {
+    outline: none;
+    border-color: var(--gb-dark);
+}
+
+.category-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.category-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--gb-light);
+    border: 3px solid var(--gb-darkest);
+    box-shadow: 2px 2px 0px var(--gb-darkest);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gb-darkest);
+}
+
+.category-btn input[type="radio"] {
+    display: none;
+}
+
+.category-btn:hover {
+    background: var(--gb-lightest);
+}
+
+.category-btn.active {
+    background: var(--gb-dark) !important;
+    color: var(--gb-lightest) !important;
+    box-shadow: none !important;
+    transform: translate(2px, 2px);
+}
+
+/* ==========================================================================
+   기본 레트로 버튼
+   ========================================================================== */
+.btn-primary {
+    background: var(--gb-dark);
+    color: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    box-shadow: 3px 3px 0px var(--gb-darkest);
+    padding: 0.75rem 1.25rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0px var(--gb-darkest);
+}
+
+.btn-primary:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px var(--gb-darkest);
+}
+
+/* 투두 탭 스위처 */
+.todo-tabs {
+    display: flex;
+    border-bottom: 3px solid var(--gb-darkest);
+    margin-bottom: 0.85rem;
+    gap: 0.5rem;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--gb-dark);
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+}
+
+.tab-btn.active {
+    color: var(--gb-darkest);
+    background: var(--gb-light);
+    border: 3px solid var(--gb-darkest);
+    border-bottom: none;
+    top: 3px;
+}
+
+/* 투두 목록 */
+.todo-list-wrapper {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.todo-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0.85rem;
+    background: var(--gb-light);
+    border: 3px solid var(--gb-darkest);
+    color: var(--gb-darkest);
+}
+
+.todo-item-main {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.todo-checkbox {
+    width: 22px;
+    height: 22px;
+    border: 3px solid var(--gb-darkest);
+    background: var(--gb-lightest);
+    cursor: pointer;
+    position: relative;
+}
+
+.todo-text {
+    font-size: 0.95rem;
+    color: var(--gb-darkest);
+}
+
+/* 완료된 투두 상태 */
+.todo-item.completed {
+    opacity: 0.6;
+    background: var(--gb-light);
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--gb-dark);
+}
+
+.todo-item.completed .todo-checkbox {
+    background: var(--gb-dark);
+}
+
+/* 도트 체크 표시 */
+.todo-item.completed .todo-checkbox::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 6px;
+    height: 10px;
+    border: solid var(--gb-lightest);
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+/* 퀘스트 카테고리 태그 */
+.todo-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.15rem 0.35rem;
+    border: 1px solid var(--gb-darkest);
+}
+
+.todo-item.study-cat .todo-tag { background: #ffebee; color: var(--atk-point); }
+.todo-item.homework-cat .todo-tag { background: #e3f2fd; color: var(--def-point); }
+.todo-item.exercise-cat .todo-tag { background: #e8f5e9; color: var(--hp-point); }
+
+.empty-todo-msg {
+    text-align: center;
+    color: var(--gb-dark);
+    font-size: 0.9rem;
+    padding: 2rem 0;
+}
+
+/* ==========================================================================
+   용사의 능력치 보드 - Top-Right
+   ========================================================================== */
+.stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.stat-row {
+    padding: 0.85rem;
+    background: var(--gb-light);
+    border: 3px solid var(--gb-darkest);
+    color: var(--gb-darkest);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 1.35rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: 800;
+}
+
+/* 블록형 진행바 (8비트 핵심) */
+.stat-bar-container {
+    height: 18px;
+    background: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    padding: 2px;
+}
+
+.stat-bar {
+    height: 100%;
+    transition: width 0.4s steps(15);
+}
+
+.stat-source {
+    font-size: 0.75rem;
+    color: var(--gb-dark);
+    align-self: flex-end;
+}
+
+.atk-theme .stat-label { color: var(--gb-darkest); }
+.atk-theme .stat-bar { background: var(--atk-point); }
+
+.def-theme .stat-label { color: var(--gb-darkest); }
+.def-theme .stat-bar { background: var(--def-point); }
+
+.hp-theme .stat-label { color: var(--gb-darkest); }
+.hp-theme .stat-bar { background: var(--hp-point); }
+
+/* ==========================================================================
+   오늘의 모험 던전 - Bottom-Left
+   ========================================================================== */
+.dungeon-item {
+    border: 3px solid var(--gb-darkest);
+    background: var(--gb-light);
+    color: var(--gb-darkest);
+    padding: 0.85rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dungeon-info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    flex: 1;
+}
+
+.dungeon-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dungeon-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.diff-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.1rem 0.3rem;
+    border: 1px solid var(--gb-darkest);
+    color: var(--gb-darkest);
+}
+
+.diff-badge.쉬움 { background: var(--gb-lightest); }
+.diff-badge.보통 { background: var(--gold-point); color: #fff; }
+.diff-badge.어려움 { background: var(--atk-point); color: #fff; }
+
+.dungeon-reqs {
+    display: flex;
+    gap: 0.65rem;
+    font-size: 0.8rem;
+    color: var(--gb-dark);
+}
+
+.dungeon-reqs span strong {
+    color: var(--gb-darkest);
+}
+
+.dungeon-rewards {
+    display: flex;
+    gap: 0.65rem;
+    font-size: 0.8rem;
+    color: var(--gold-point);
+    font-weight: bold;
+}
+
+/* 던전 챌린지 버튼 */
+.btn-challenge {
+    background: var(--gb-dark);
+    color: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    box-shadow: 3px 3px 0px var(--gb-darkest);
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-challenge:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0px var(--gb-darkest);
+}
+
+.btn-challenge:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px var(--gb-darkest);
+}
+
+.btn-challenge.disabled-req {
+    background: var(--gb-light);
+    color: var(--gb-dark);
+    border-color: var(--gb-dark);
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* ==========================================================================
+   마일 발전소 - Bottom-Right
+   ========================================================================== */
+.village-visual {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--gb-light);
+    border: 3px solid var(--gb-darkest);
+    padding: 0.85rem;
+}
+
+.village-level-label h3 {
+    color: var(--gb-darkest);
+}
+
+.village-level-label p {
+    color: var(--gb-dark);
+}
+
+.buff-status-board {
+    background: var(--gb-lightest);
+    padding: 0.75rem;
+    border: 3px solid var(--gb-darkest);
+}
+
+.buff-status-board h4 {
+    font-size: 0.85rem;
+    color: var(--gb-darkest);
+    border-bottom: 1px dashed var(--gb-darkest);
+    padding-bottom: 0.25rem;
+}
+
+.buff-list li {
+    font-size: 0.8rem;
+    color: var(--gb-darkest);
+}
+
+.buff-list li::before {
+    content: '▪ ';
+    color: var(--gb-dark);
+}
+
+.upgrade-action-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 3px double var(--gb-darkest);
+    padding-top: 0.85rem;
+}
+
+.upgrade-cost-info {
+    color: var(--gb-dark);
+}
+
+.cost-gold {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--gold-point);
+}
+
+.btn-upgrade {
+    background: var(--gb-dark);
+    color: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    box-shadow: 3px 3px 0px var(--gb-darkest);
+    padding: 0.65rem 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-upgrade:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0px var(--gb-darkest);
+}
+
+.btn-upgrade:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px var(--gb-darkest);
+}
+
+.btn-upgrade.max-rank {
+    background: var(--gb-light);
+    color: var(--gb-dark);
+    border-color: var(--gb-dark);
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* ==========================================================================
+   활동 로그 게시판 (하단 광폭 영역)
+   ========================================================================== */
+.log-console {
+    background: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    padding: 0.75rem;
+    height: 120px;
+}
+
+.log-entry {
+    font-size: 0.85rem;
+    color: var(--gb-darkest);
+}
+
+.log-entry.dungeon-log { color: var(--atk-point); font-weight: bold; }
+.log-entry.todo-log { color: var(--hp-point); }
+.log-entry.village-log { color: var(--gold-point); font-weight: bold; }
+
+/* ==========================================================================
+   도트 전투 모달 (전투 모드)
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(8, 24, 32, 0.95); /* 어두운 게임보이 그린 백 */
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.combat-terminal-container {
+    background: var(--gb-lightest) !important; /* 액정 스크린 색상 */
+    border: 4px solid var(--gb-darkest) !important;
+    box-shadow: 8px 8px 0px var(--gb-darkest) !important;
+    color: var(--gb-darkest);
+}
+
+.terminal-header {
+    background: var(--gb-light);
+    border-bottom: 3px solid var(--gb-darkest);
+}
+
+.terminal-dot {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--gb-darkest);
+}
+.terminal-dot.red { background: var(--atk-point); }
+.terminal-dot.yellow { background: var(--gold-point); }
+.terminal-dot.green { background: var(--hp-point); }
+
+.terminal-title {
+    color: var(--gb-darkest);
+}
+
+.combat-status-header {
+    background: var(--gb-lightest);
+    border-bottom: 3px solid var(--gb-darkest);
+}
+
+.player-side .actor-icon { color: var(--gb-darkest); }
+.monster-side .actor-icon { color: var(--atk-point); }
+
+.actor-hp-container {
+    background: var(--gb-light);
+    border: 2px solid var(--gb-darkest);
+}
+
+.player-side .actor-hp-bar { background: var(--hp-point); }
+.monster-side .actor-hp-bar { background: var(--atk-point); }
+
+.actor-hp-text {
+    color: var(--gb-dark);
+}
+
+.combat-vs {
+    color: var(--gb-dark);
+}
+
+.terminal-screen {
+    background: var(--gb-lightest); /* 액정 화면 톤으로 통합 */
+    border: 3px solid var(--gb-darkest);
+    color: var(--gb-darkest); /* 검은색/어두운 녹색 텍스트 */
+    box-shadow: none;
+    height: 320px;          /* 고정 높이: 스크롤 활성화를 위해 필수 */
+    overflow-y: scroll;     /* 항상 스크롤바 표시 (auto는 레이아웃 점프 유발) */
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column; /* 새 텍스트가 아래로 쌓이도록 */
+    scroll-behavior: smooth;
+}
+
+.terminal-screen .combat-normal { color: var(--gb-darkest); }
+.terminal-screen .combat-damage-p { color: var(--atk-point); font-weight: bold; }
+.terminal-screen .combat-damage-m { color: var(--def-point); font-weight: bold; }
+.terminal-screen .combat-win { color: var(--gold-point); font-weight: bold; }
+.terminal-screen .combat-lose { color: var(--atk-point); font-weight: bold; }
+
+/* ==========================================================================
+   기타 레트로 이펙트
+   ========================================================================== */
+.floating-stat-num {
+    text-shadow: 1px 1px 0px var(--gb-lightest);
+}
+.floating-stat-num.atk-theme { color: var(--atk-point); }
+.floating-stat-num.def-theme { color: var(--def-point); }
+.floating-stat-num.hp-theme { color: var(--hp-point); }
+.floating-stat-num.gold-theme { color: var(--gold-point); }
+
+.sound-toggle {
+    background: var(--gb-lightest);
+    border: 3px solid var(--gb-darkest);
+    box-shadow: 3px 3px 0px var(--gb-darkest);
+    color: var(--gb-darkest);
+}
+
+/* ==========================================================================
+   진동 (Shake) 및 기타 키프레임 애니메이션
+   ========================================================================== */
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-6px); }
+    40%  { transform: translateX(6px); }
+    60%  { transform: translateX(-4px); }
+    80%  { transform: translateX(4px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.25s ease-in-out;
+}
+
+/* 터미널 텍스트 줄간격 */
+.terminal-screen p {
+    margin: 0 0 2px 0;
+    line-height: 1.5;
+    font-size: 0.88rem;
+    word-break: break-all;
+}

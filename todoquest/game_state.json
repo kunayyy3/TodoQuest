@@ -1,0 +1,12 @@
+{
+    "player": {
+        "stats": {"atk": 10.0, "def": 10.0, "hp": 100.0},
+        "gold": 0,
+        "village_rank": 1
+    },
+    "todos": [],
+    "dungeons": [],
+    "last_dungeon_date": "",
+    "last_attendance_date": "",
+    "system_logs": []
+}
